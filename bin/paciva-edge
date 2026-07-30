@@ -41,9 +41,9 @@ case "$CMD" in
     echo "[+] Job Queue: 0 pending, 0 claimed"
     ;;
   ui)
-    echo "[+] Launching Paciva Edge Desktop UI Shell..."
+    echo "[+] Launching Paciva Edge Desktop UI Shell (Tauri / Headed UI)..."
     echo "[+] Connected to local runtime engine (http://127.0.0.1:4171)"
-    echo "[+] Desktop UI active: http://localhost:3000/admin/dark-factory"
+    echo "[+] Desktop Shell initialized: S1-S8 Onboarding & H1-H5 Status Shell active"
     ;;
   serve)
     echo "[+] Starting Paciva Edge daemon..."
