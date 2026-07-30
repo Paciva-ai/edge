@@ -40,6 +40,11 @@ case "$CMD" in
     echo "[+] PowerStateGuard: UNTHROTTLED (AC Power, GPU Load < 70%)"
     echo "[+] Job Queue: 0 pending, 0 claimed"
     ;;
+  ui)
+    echo "[+] Launching Paciva Edge Desktop UI Shell..."
+    echo "[+] Connected to local runtime engine (http://127.0.0.1:4171)"
+    echo "[+] Desktop UI active: http://localhost:3000/admin/dark-factory"
+    ;;
   serve)
     echo "[+] Starting Paciva Edge daemon..."
     echo "[+] Listening for local P2P jobs and E2EE cloud relay..."
@@ -54,6 +59,7 @@ case "$CMD" in
     echo "  config init    Initialize local configuration and keypair"
     echo "  packs install  Download and verify recommended model packs"
     echo "  status         Display device status and workload governance state"
+    echo "  ui             Launch Paciva Edge Desktop UI Shell"
     echo "  serve          Start the edge background service daemon"
     ;;
 esac
