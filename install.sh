@@ -25,5 +25,14 @@ else
 fi
 
 echo "Selected Target Triple: ${TARGET}"
-echo "Downloading latest release package from https://github.com/Paciva-ai/edge/releases..."
-echo "Paciva Edge installed successfully!"
+
+BIN_DIR="${HOME}/.local/bin"
+mkdir -p "${BIN_DIR}"
+
+echo "Installing paciva-edge executable to ${BIN_DIR}/paciva-edge..."
+
+curl -fsSL https://raw.githubusercontent.com/Paciva-ai/edge/main/bin/paciva-edge -o "${BIN_DIR}/paciva-edge"
+chmod +x "${BIN_DIR}/paciva-edge"
+
+echo "Paciva Edge installed successfully to ${BIN_DIR}/paciva-edge!"
+echo "Run 'paciva-edge doctor' to verify system diagnostics."
