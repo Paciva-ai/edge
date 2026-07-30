@@ -41,9 +41,14 @@ case "$CMD" in
     echo "[+] Job Queue: 0 pending, 0 claimed"
     ;;
   ui)
-    echo "[+] Launching Paciva Edge Desktop UI Shell (Tauri / Headed UI)..."
+    echo "[+] Launching Paciva Edge Desktop UI Shell..."
     echo "[+] Connected to local runtime engine (http://127.0.0.1:4171)"
-    echo "[+] Desktop Shell initialized: S1-S8 Onboarding & H1-H5 Status Shell active"
+    echo "[+] Opening http://localhost:3000/edge..."
+    if command -v open >/dev/null 2>&1; then
+      open "http://localhost:3000/edge"
+    elif command -v xdg-open >/dev/null 2>&1; then
+      xdg-open "http://localhost:3000/edge"
+    fi
     ;;
   serve)
     echo "[+] Starting Paciva Edge daemon..."
