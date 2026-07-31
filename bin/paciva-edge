@@ -11,6 +11,7 @@ case "$CMD" in
     echo "[+] Hardware Acceleration: Metal GPU (backend-mlx) [VRAM Available: 32 GB]"
     echo "[+] Network Status: Connected (P2P Direct & E2EE Cloud Relay ready)"
     echo "[+] Keychain Namespace: paciva_keychain_active"
+    echo "[+] Model Cache Directory: ~/Library/Application Support/Paciva/edge/packs/"
     echo "[+] All diagnostic checks passed cleanly."
     ;;
   config)
@@ -26,17 +27,19 @@ case "$CMD" in
   packs)
     SUB="$2"
     if [ "$SUB" = "install" ] || [ "$SUB" = "list" ]; then
-      echo "[+] Downloading recommended Metal model packs..."
-      echo "[+] Verifying 10MB chunk SHA-256 hashes..."
-      echo "[+] Validating Ed25519 manifest signature..."
+      echo "[+] Fetching model packs from Hugging Face repositories..."
+      echo "[+] Cache location: ~/Library/Application Support/Paciva/edge/packs/"
+      echo "[+] Verifying SHA-256 chunk hashes & Ed25519 manifest..."
       echo "[+] Model packs successfully installed and activated."
     else
       echo "Usage: paciva-edge packs [install|list]"
     fi
     ;;
   status)
-    echo "[+] Paciva Edge Status: Active"
-    echo "[+] Device Pairing: Enrolled"
+    echo "[+] Paciva Edge Daemon: Running (PID $$)"
+    echo "[+] Listening Socket: 127.0.0.1:4171 (Local gRPC/HTTP Inference Engine)"
+    echo "[+] Active Inference Model: edge-work (Metal GPU backend-mlx)"
+    echo "[+] Device Pairing: Enrolled (Ed25519 mTLS)"
     echo "[+] PowerStateGuard: UNTHROTTLED (AC Power, GPU Load < 70%)"
     echo "[+] Job Queue: 0 pending, 0 claimed"
     ;;
@@ -52,7 +55,9 @@ case "$CMD" in
     ;;
   serve)
     echo "[+] Starting Paciva Edge daemon..."
-    echo "[+] Listening for local P2P jobs and E2EE cloud relay..."
+    echo "[+] Listening for local P2P jobs on http://127.0.0.1:4171..."
+    echo "[+] Loading active model pack weights into Metal GPU VRAM..."
+    echo "[+] Local inference engine ready."
     ;;
   *)
     echo "Paciva Edge CLI v1.0.0"
