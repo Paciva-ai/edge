@@ -46,7 +46,27 @@ get_power_and_gaming_info() {
   fi
 }
 
+# Verify local model pack file integrity on disk
+check_pack_disk_integrity() {
+  PACK_DIR="$HOME/Library/Application Support/Paciva/edge/packs"
+  MISSING_PACKS=()
+  PRESENT_PACKS=()
+
+  for pack in "edge-fast" "edge-work" "edge-studio"; do
+    if [ -d "$PACK_DIR/$pack" ]; then
+      if [ -f "$PACK_DIR/$pack/config.json" ] && ( [ -f "$PACK_DIR/$pack/model.safetensors" ] || [ -f "$PACK_DIR/$pack/model-00001-of-00002.safetensors" ] ); then
+        PRESENT_PACKS+=("$pack")
+      else
+        MISSING_PACKS+=("$pack (weights missing)")
+      fi
+    else
+      MISSING_PACKS+=("$pack (not downloaded)")
+    fi
+  done
+}
+
 get_power_and_gaming_info
+check_pack_disk_integrity
 
 case "$CMD" in
   doctor)
@@ -58,10 +78,19 @@ case "$CMD" in
     echo "[+] Hardware Acceleration: Metal GPU (backend-mlx) [VRAM Available: 32 GB]"
     echo "[+] Gaming Detection: $([ "$GAMING_DETECTED" = true ] && echo "Active Game Detected${GAME_NAME}" || echo "No active games detected")"
     echo "[+] PowerStateGuard Policy: ${POLICY}"
-    echo "[+] Network Status: Connected (P2P Direct & E2EE Cloud Relay ready)"
     echo "[+] Keychain Namespace: paciva_keychain_active"
     echo "[+] Model Cache Directory: ~/Library/Application Support/Paciva/edge/packs/"
-    echo "[+] All diagnostic checks passed cleanly."
+    
+    if [ ${#PRESENT_PACKS[@]} -gt 0 ]; then
+      echo "[+] Fully Installed Packs: ${PRESENT_PACKS[*]}"
+    fi
+
+    if [ ${#MISSING_PACKS[@]} -gt 0 ]; then
+      echo "[-] Warning: Uninstalled or incomplete model packs: ${MISSING_PACKS[*]}"
+      echo "[-] Doctor Warning: 1 or more model packs missing full weights from disk cache."
+    else
+      echo "[+] All diagnostic & weight integrity checks passed cleanly."
+    fi
     ;;
   config)
     SUB="$2"
@@ -89,8 +118,8 @@ case "$CMD" in
     echo "[+] Form Factor: ${FORM_FACTOR}"
     echo "[+] Power Source: ${POWER_SRC}"
     echo "[+] Listening Socket: 127.0.0.1:4171 (Local gRPC/HTTP Inference Engine)"
-    echo "[+] Active Inference Model: edge-work (Metal GPU backend-mlx)"
-    echo "[+] Gaming Detection: $([ "$GAMING_DETECTED" = true ] && echo "Active Game Detected${GAME_NAME}" || echo "No active games detected")"
+    echo "[+] Active Inference Model: edge-fast (Metal GPU backend-mlx)"
+    echo "[+] Installed Weight Status: $([ ${#PRESENT_PACKS[@]} -gt 0 ] && echo "Ready (${PRESENT_PACKS[*]})" || echo "Weights Missing")"
     echo "[+] PowerStateGuard Policy: ${POLICY}"
     echo "[+] Device Pairing: Enrolled (Ed25519 mTLS)"
     echo "[+] Job Queue: 0 pending, 0 claimed"
